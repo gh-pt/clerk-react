@@ -1,0 +1,60 @@
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body{
+    height: 100%;
+    width: 100%;
+}
+
+a{
+    text-decoration: none;
+}
+
+.header{
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.navbar{
+    width: fit-content;
+}
+
+.nav-ul{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    list-style: none;
+}
+
+.main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+}
+
+.nav-btn{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px 8px;
+    background-color: yellow;
+    color: black;
+}
+
+.profile{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.loading{
+    text-align: center;
+    margin: auto;
+    margin-block: auto;
+}
