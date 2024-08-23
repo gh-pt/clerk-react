@@ -29,13 +29,14 @@ app.post("/api/webhook", async function (req, res) {
     try {
         // Destructure the payload from req.body
         const { type, data } = req.body;
+        // console.log("Payload:", data);
         
         // If data contains id and attributes, destructure them
         const { id, ...attributes } = data || {};
-        console.log("Attributes:", attributes); // Logging attributes for debugging
+        // console.log("Attributes:", attributes); // Logging attributes for debugging
 
         const svixHeaders = req.headers;
-        console.log("Headers:", svixHeaders);
+        // console.log("Headers:", svixHeaders);
 
         const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET_KEY);
         const evt = wh.verify(JSON.stringify(req.body), svixHeaders); // Verify the payload string
@@ -48,13 +49,14 @@ app.post("/api/webhook", async function (req, res) {
         if (type === "user.created") {
             console.log(`User ${id} was created.`);
 
+            // create user
             const user = new User({
                 clerkUserId: id,
                 fullName : `${first_name} ${last_name}`,
                 email: email_addresses[0].email_address,
                 avatar: image_url,
             });
-
+            // save user
             await user.save();
             console.log("User saved to database");
 
@@ -76,6 +78,7 @@ app.post("/api/webhook", async function (req, res) {
         }else if(type === "user.deleted"){
             console.log(`User ${id} was deleted`);
 
+            // Delete user in database
             await User.deleteOne({clerkUserId : id});
 
             console.log("User deleted in the database");
