@@ -28,28 +28,30 @@ app.get('/', (req,res)=>{
 app.post("/api/webhook", async function (req, res) {
     try {
         // Destructure the payload from req.body
-        const { type, data } = req.body;
-        // console.log("Payload:", data);
+        const { data } = req.body;
+        console.log("Payload:", data);
         
-        // If data contains id and attributes, destructure them
-        const { id, ...attributes } = data || {};
-        // console.log("Attributes:", attributes); // Logging attributes for debugging
-
         const svixHeaders = req.headers;
-        // console.log("Headers:", svixHeaders);
+        console.log("Headers:", svixHeaders);
 
         const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET_KEY);
         const evt = wh.verify(JSON.stringify(req.body), svixHeaders); // Verify the payload string
 
-        console.log("Event Type:", type);
+        // Destructure the data values
+        const { id, ...attributes } = evt.data;
 
-        // Destructuring data
+        // Destructure the type of data
+        const eventType = evt.type;
+        console.log("Event Type:", eventType);
+
+        // Destructuring data from attributes
         const { email_addresses, first_name, last_name, image_url } = attributes;
 
-        if (type === "user.created") {
+        // Handle the webhooks
+        if (eventType === "user.created") {
             console.log(`User ${id} was created.`);
 
-            // create user
+            // Create user
             const user = new User({
                 clerkUserId: id,
                 fullName : `${first_name} ${last_name}`,
@@ -60,7 +62,7 @@ app.post("/api/webhook", async function (req, res) {
             await user.save();
             console.log("User saved to database");
 
-        } else if (type === "user.updated") {
+        } else if (eventType === "user.updated") {
             console.log(`User ${id} was updated.`);
             
             // Update user data in the database
@@ -75,7 +77,7 @@ app.post("/api/webhook", async function (req, res) {
             });
 
             console.log("User updated in the database");
-        }else if(type === "user.deleted"){
+        }else if(eventType === "user.deleted"){
             console.log(`User ${id} was deleted`);
 
             // Delete user in database
